@@ -1,4 +1,3 @@
-```python
 from fastapi import FastAPI
 from pydantic import BaseModel
 import os
@@ -53,4 +52,3 @@ async def summarize(dialogue_input: DialogueInput):
 async def home():
     with open("templates/index.html", "r", encoding="utf-8") as f:
         return f.read()
-```
