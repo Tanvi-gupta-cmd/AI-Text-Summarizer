@@ -27,7 +27,7 @@ def clean_data(text):
 def summarize_dialogue(dialogue: str) -> str:
     dialogue = clean_data(dialogue)
 
-    api_url = "https://router.huggingface.co/hf-inference/models/t5-small"
+    api_url = "https://router.huggingface.co/hf-inference/models/facebook/bart-large-cnn"
 
     headers = {
         "Authorization": f"Bearer {os.getenv('HF_TOKEN')}",
