@@ -1,6 +1,4 @@
 fastapi
 uvicorn
-transformers
-torch
-sentencepiece
 jinja2
+requests
