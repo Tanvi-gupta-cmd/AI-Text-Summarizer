@@ -1,9 +1,10 @@
+```python
 from fastapi import FastAPI
 from pydantic import BaseModel
 import os
-import requests
 import re
 from fastapi.responses import HTMLResponse
+from huggingface_hub import InferenceClient
 
 # initialize fastapi app
 app = FastAPI(
@@ -27,33 +28,17 @@ def clean_data(text):
 def summarize_dialogue(dialogue: str) -> str:
     dialogue = clean_data(dialogue)
 
-    api_url = "https://router.huggingface.co/hf-inference/models/facebook/bart-large-cnn"
-
-    headers = {
-        "Authorization": f"Bearer {os.getenv('HF_TOKEN')}",
-        "Content-Type": "application/json"
-    }
-
-    payload = {
-        "inputs": "summarize: " + dialogue
-    }
-
-    response = requests.post(
-        api_url,
-        headers=headers,
-        json=payload,
-        timeout=120
+    client = InferenceClient(
+        provider="hf-inference",
+        api_key=os.getenv("HF_TOKEN")
     )
 
-    result = response.json()
+    result = client.summarization(
+        dialogue,
+        model="facebook/bart-large-cnn"
+    )
 
-    if isinstance(result, list) and len(result) > 0:
-        return result[0].get("generated_text", "")
-
-    if isinstance(result, dict) and "error" in result:
-        return "Hugging Face error: " + result["error"]
-
-    return "Unable to generate summary."
+    return result.summary_text
 
 
 # API endpoint
@@ -68,3 +53,4 @@ async def summarize(dialogue_input: DialogueInput):
 async def home():
     with open("templates/index.html", "r", encoding="utf-8") as f:
         return f.read()
+```
